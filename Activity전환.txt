@@ -1,0 +1,21 @@
+Activity 전환(버튼 누르면)
+
+public class MainActivity {
+
+	ImageButton a;
+
+	protected void onCreate(Bundle savedInstanceState) {
+
+		button_a = findViewById(R.id.a);
+		a.setOnClickListener(new View.OnClickListener() {
+			Intent intent = new Intent(MainActivity.this. SubActivity.class)
+			startActivity(intent);
+		});
+	}
+}
+
+
+* Manifest에 SubActivity도 추가하는 것 잊지말기
+
+
+
