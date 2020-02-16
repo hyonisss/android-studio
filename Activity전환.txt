@@ -1,5 +1,9 @@
 Activity 전환(버튼 누르면)
 
+
+1. 화면전환
+
+
 public class MainActivity {
 
 	ImageButton a;
@@ -19,3 +23,42 @@ public class MainActivity {
 
 
 
+2. 값 받아서 넘기기
+
+public class MainActivity {
+	EditText edit_id, edit_password;
+	Button a;
+	String inputId, inputPassword;
+
+	protected void onCreate(Bundle savedInstanceState) {
+
+		button_a = findViewById(R.id.a);
+		Edit_id = findViewById(R.id.edit_id);
+		Edit_password = findViewById(R.id.edit_password);
+
+		a.setOnClickListener(new View.OnClickListener() {
+			String email = Edit_id.getText().toString();
+			String password = Edit_password.getText().toString();
+			Intent intent = new Intent(MainActivity.this. SubActivity.class)
+			intent.putExtra("email", email);
+			intent.putExtra("password", password);
+			startActivity(intent);
+		});
+		
+
+	}
+}
+
+public class SubActivity{
+
+
+	protected void onCreate(Bundle savedInstanceState) {
+	
+		Intent intent = getIntent();
+		Bundle bundle = intent.getExtras();
+		String email = bundle.getString("email");
+		String password = bundle.getString("password");
+
+		
+	}
+}
