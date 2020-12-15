@@ -1,0 +1,44 @@
+package com.android.scsa.testui;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    Button thisB, nestedB, anoB;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.event_layout);
+        //이벤트 소스
+        thisB = findViewById(R.id.thisBut);
+        nestedB = findViewById(R.id.nestBut);
+        anoB = findViewById(R.id.annoBut);
+
+        //이벤트 소스에 이벤트 핸들러 등록
+        thisB.setOnClickListener(this);
+        nestedB.setOnClickListener(new MyClickHandler());
+        anoB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "익명 nested로 핸들러 구현함", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    class MyClickHandler implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(MainActivity.this, "nested로 핸들러 구현함", Toast.LENGTH_SHORT).show();
+        }
+    }
+    //이벤트 핸들러 : 버튼 클릭시 호출되는 함수수
+    @Override
+    public void onClick(View v) {
+        Toast.makeText(this, "this로 핸들러 구현함", Toast.LENGTH_SHORT).show();
+    }
+}
