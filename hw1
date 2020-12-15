@@ -1,0 +1,205 @@
+<memoMgr.java>
+package com.android.scsa.memoapp;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class memoMgr {
+
+    List<Memo> arrList = new ArrayList<Memo>();
+    private static memoMgr memomgr = new memoMgr();
+    private int index;
+    private memoMgr() {
+
+    }
+    public static memoMgr getInstance() {
+        return memomgr;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+    public String info() {
+        return arrList.get(index-1).getName();
+    }
+    public void add(Memo mem) {
+        arrList.add(mem);
+        index++;
+    }
+
+    public Memo[] getAllMemo() {
+        Memo[] memArr = new Memo[arrList.size()];
+        arrList.toArray(memArr);
+        return memArr;
+    }
+
+    public Memo findMemo(int idx) {
+                return arrList.get(idx);
+    }
+}
+=================================================================================
+
+<MainActivity.java>
+
+package com.android.scsa.memoapp;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+    EditText edText;
+    memoMgr mgr;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        edText = findViewById(R.id.myEdText);
+        mgr = memoMgr.getInstance();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        edText.setText(mgr.info());
+    }
+
+    public void add(View view) {
+        if(mgr.getIndex()>=3) {
+            Toast.makeText(this, "저장 공간이 없습니다", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent i = new Intent(this, MemoEdit.class);
+        startActivity(i);
+    }
+
+    public void search(View view) {
+        Intent i2 = new Intent(this, MemoInfo.class);
+        startActivity(i2);
+    }
+}
+
+==================================================================================
+<MemoEdit.java>
+
+package com.android.scsa.memoapp;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MemoEdit extends AppCompatActivity {
+    EditText ed1, ed2, ed3;
+    memoMgr memomgr;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_memo_edit);
+        memomgr = memoMgr.getInstance();
+        ed1= findViewById(R.id.edText1);
+        ed2= findViewById(R.id.edText2);
+        ed3= findViewById(R.id.edText3);
+    }
+
+    public void save(View view) {
+
+        String name = ed1.getText().toString();
+        String text = ed2.getText().toString();
+        String date = ed3.getText().toString();
+        Memo mem = new Memo(name, text, date);
+        memomgr.add(mem);
+        Toast.makeText(this, "저장이 완료되었습니다", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+}
+=============================================================================
+<MemoInfo.java>
+
+package com.android.scsa.memoapp;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MemoInfo extends AppCompatActivity {
+    EditText m1, m2, m3;
+    memoMgr mgr;
+    String name;
+    Memo memo;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_memo_info);
+
+        m1 = findViewById(R.id.text1);
+        m2 = findViewById(R.id.text2);
+        m3 = findViewById(R.id.text3);
+    }
+
+    public void find(View view) {
+        mgr = memoMgr.getInstance();
+        int cnt = mgr.getIndex();
+        switch(cnt) {
+            case 3:
+                m3.setText(mgr.findMemo(2).toString());
+            case 2:
+                m2.setText(mgr.findMemo(1).toString());
+            case 1:
+                m1.setText(mgr.findMemo(0).toString());
+                break;
+            default:
+                Toast.makeText(this, "저장된 정보가 없습니다", Toast.LENGTH_SHORT).show();
+        }
+        Toast.makeText(this, "조회가 완료되었습니다", Toast.LENGTH_SHORT).show();
+    }
+}
+===================================================================================
+<Memo.java>
+
+package com.android.scsa.memoapp;
+
+public class Memo {
+    private String name;
+    private String text;
+    private String date;
+
+    public Memo() {}
+    public Memo(String name, String text, String date)
+    {
+        this.name = name;
+        this.text = text;
+        this.date = date;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "오늘 할 일: " + name +
+                "/ 상세내용: " + text +
+                "/ 날짜: " + date ;
+    }
+}
