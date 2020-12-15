@@ -114,7 +114,7 @@ public class MemoEdit extends AppCompatActivity {
         String text = ed2.getText().toString();
         String date = ed3.getText().toString();
         Memo mem = new Memo(name, text, date);
-        memomgr.add(mem);
+        memomgr.add(mem); //메모추가
         Toast.makeText(this, "저장이 완료되었습니다", Toast.LENGTH_SHORT).show();
         finish();
     }
