@@ -13,6 +13,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_layout);
+        //액션 가져오기
+        String action = intent.getAction();
         //이벤트 소스
         thisB = findViewById(R.id.thisBut);
         nestedB = findViewById(R.id.nestBut);
