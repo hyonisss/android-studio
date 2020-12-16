@@ -1,0 +1,96 @@
+<MainActivity.java>
+package com.android.scsa.andr.teststartaresult;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
+public class MainActivity extends AppCompatActivity {
+    EditText ed;
+    public static final int EDIT_MODE = 1;
+    public static final int CREATIVE_MODE = 2;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ed = findViewById(R.id.editTv);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case EDIT_MODE:
+                    String recData = data.getStringExtra("data");
+                    if(recData != null) {
+                        ed.setText(recData);
+                    }
+                    break;
+                case CREATIVE_MODE:
+            }
+        }
+    }
+
+    public void edit(View view) {
+        Intent i = new Intent(this, EditActivity.class);
+        String inputData = ed.getText().toString();
+        i.putExtra("data", inputData);
+        startActivityForResult(i, MainActivity.EDIT_MODE);
+    }
+}
+
+=======================================================================================
+<EditActivity.java>
+
+package com.android.scsa.andr.teststartaresult;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+public class EditActivity extends AppCompatActivity implements View.OnClickListener {
+    EditText ed;
+    Button okB, cancelB;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit);
+         ed = findViewById(R.id.editTv1);
+        //이벤트 수신 후 데이터 가져오기
+        String recData = getIntent().getStringExtra("data");
+        if(recData!=null) {
+            ed.setText(recData);
+        }
+        //이벤트 소스에 이벤트 핸들러 등록
+        findViewById(R.id.okBut).setOnClickListener(this);
+        findViewById(R.id.canBut).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.okBut) {
+            Intent i = new Intent(); // 누구를 호출할 지 지정 안해줘도 됨
+            String inputdata = ed.getText().toString();
+            i.putExtra("data", inputdata);
+            setResult(RESULT_OK, i);
+            finish(); //반드시 finish() 호출
+        } else if(v.getId() == R.id.canBut) {
+            setResult(RESULT_CANCELED);
+            finish();
+        } else {
+            Log.i("INFO", "넌 누구냐?");
+        }
+
+    }
+
+}
