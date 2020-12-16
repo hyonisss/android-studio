@@ -1,0 +1,29 @@
+package com.android.scsa.andr.testdynamicui;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+
+public class MainActivity extends AppCompatActivity {
+
+    LinearLayout lineLay;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        lineLay = findViewById(R.id.myLinear);
+    }
+
+    public void changeUI(View view) {
+        //xml로 만든 Layout을 객체화 시키는 클래스
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View myView = layoutInflater.inflate(R.layout.test_layout, null);
+        lineLay.removeAllViews();
+        lineLay.addView(myView);
+        
+    }
+}
