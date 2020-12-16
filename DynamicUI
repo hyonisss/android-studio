@@ -27,3 +27,93 @@ public class MainActivity extends AppCompatActivity {
         
     }
 }
+
+
+
+2.
+
+package com.android.scsa.andr.moviemgr;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.zip.Inflater;
+/*
+어벤저스, 스타워즈, 해리포터, 겨울왕국, 분노의질주
+ */
+
+public class MainActivity extends AppCompatActivity {
+    ListView movieL;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //어댑터 뷰
+        movieL = findViewById(R.id.movieListV);
+        //어댑터 생성
+        MovieAdapter movieAdapter = new MovieAdapter(R.layout.row_layout, getMovieDate());
+        //어댑터뷰에 어댑터 등록
+        movieL.setAdapter(movieAdapter);
+    }
+    class MovieAdapter extends BaseAdapter {
+        private ArrayList<Movie> movList;
+        private int layout;
+        public MovieAdapter (int layout, ArrayList<Movie> movL) {
+            this.layout = layout;
+            this.movList = movL;
+        }
+        @Override
+        public int getCount() { //전체 표출할 데이터 개수
+            return movList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return movList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = getLayoutInflater();
+            if(convertView==null) {
+                convertView = inflater.inflate(layout, null);
+            }
+            Movie movie = (Movie) getItem(position);
+            //row_view에서 imageView, textView 2개를 가져와서 해당 UI 컴포넌트에 Movie 객체와 정보를 등록한다..
+            ImageView imgV = convertView.findViewById(R.id.myImgView);
+            TextView titleV = convertView.findViewById(R.id.titleTv);
+            TextView contentV = convertView.findViewById(R.id.contentTv);
+            //가져온 view 내용을 변경
+            imgV.setImageResource(movie.getImageID());
+            titleV.setText(movie.getTitle());
+            contentV.setText(movie.getContent());
+            return convertView;
+        }
+    }
+    
+
+    //데이터를 제공하는 테스트 함수 구현
+    public ArrayList<Movie> getMovieDate() {
+        ArrayList<Movie> movList = new ArrayList<>();
+        movList.add(new Movie("어벤져스", "영웅들이 세상을 구하는 이야기...", R.drawable.aven));
+        movList.add(new Movie("겨울왕국", "엘사 이야기...", R.drawable.winter));
+        movList.add(new Movie("분노의질주", "분노하는 이야기...", R.drawable.anger));
+        movList.add(new Movie("해리포터", "해리포터 이야기...", R.drawable.porter));
+        return movList;
+    }
+}
