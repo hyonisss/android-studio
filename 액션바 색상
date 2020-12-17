@@ -1,0 +1,5 @@
+ ActionBar aBar= getSupportActionBar();
+        ColorDrawable cd = new ColorDrawable(Color.parseColor("#adf5f7"));
+        aBar.setBackgroundDrawable(cd);
+이렇게 작성하면 타이틀바가 하늘색으로 바뀌어요...본인이 좋아하는 색으로 바꿔보세요..
+해당 함수를 메인 액티비티 onCreate 안에 추가하세요
