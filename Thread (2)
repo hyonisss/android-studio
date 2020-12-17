@@ -29,4 +29,30 @@ public class TestThread {
 
 }
 
+=======================================================================
+<익명 nested로 구현- 더 많이 쓰는 방법>
 
+public class TestThread {
+
+	public static void main(String[] args) {
+	System.out.println("main start..."+Thread.currentThread().getName());
+	
+	new Thread(new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			for(int i=1; i<6; i++) {
+				System.out.println(Thread.currentThread().getName()+" : " + i);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}).start();
+		
+	System.out.println("main end..."+Thread.currentThread().getName());
+	}
+}
