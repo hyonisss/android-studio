@@ -1,0 +1,50 @@
+<TestThread.java>
+package edu.scsa.day5;
+
+// 1. Thread를 상속받아 구현
+class CountThread extends Thread{
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		super.run();
+		//여기 안에 하고 싶은 작업을 넣음
+		for(int i=1; i<6; i++) {
+			System.out.println(Thread.currentThread().getName()+" : " + i);
+			try {
+				sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+//Thread 3개가 도는 것
+public class TestThread {
+
+	public static void main(String[] args) {
+	System.out.println("main start..."+Thread.currentThread().getName());
+	CountThread couTh = new CountThread();
+	couTh.start();
+	CountThread couTh1 = new CountThread();
+	couTh1.start();
+	System.out.println("main end..."+Thread.currentThread().getName());
+
+	}
+
+}
+
+===============================================================
+
+<출력>
+main start...main
+main end...main
+Thread-1 : 1
+Thread-0 : 1
+Thread-0 : 2
+Thread-1 : 2
+Thread-0 : 3
+Thread-1 : 3
+Thread-1 : 4
+Thread-0 : 4
+Thread-0 : 5
+Thread-1 : 5
