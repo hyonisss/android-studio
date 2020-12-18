@@ -1,6 +1,5 @@
 <MainActivity.java>
 package com.android.scsa.andr.teststartaresult;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
