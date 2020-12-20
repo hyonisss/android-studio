@@ -57,7 +57,7 @@ public class PlayerService extends Service {
             player.stop();
             player.release();
         }
-        player = MediaPlayer.create(this, R.raw.iu2);
+        player = MediaPlayer.create(this, R.raw.iu2); //파일 이름 
         player.setLooping(false);
         player.start();
 
