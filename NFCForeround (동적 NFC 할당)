@@ -1,0 +1,122 @@
+<Manifest.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.scsa.andr.myforenfcreader">
+    --NFC permission주기--
+    <uses-permission android:name="android.permission.NFC"/>
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyForegroundNFCReader">
+        <activity android:name="com.android.scsa.andr.myforenfcreader.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
+=====================================================================================================
+<MainActivity.java>
+
+package com.android.scsa.andr.myforenfcreader;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
+import android.widget.TextView;
+
+//동적으로 NFC 받기
+public class MainActivity extends AppCompatActivity {
+
+    NfcAdapter nfcAdapter = null;
+    IntentFilter[] filters = null;
+    PendingIntent pInt = null;
+    TextView myTv;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        myTv = findViewById(R.id.myTv);
+
+        //장비를 제어할 수 있는 NFCAdapter 객체를 가져온다
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        //전달된 인텐트를 받아 처리할 수 있도록 설정한다
+        Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        pInt = PendingIntent.getActivity(this, 0, i, 0);
+        //IntentFilter 생성 : 시스템에서 올라오는 NFC 관련 인텐트를 수신하기 위해서
+        IntentFilter filter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        IntentFilter filter1 = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        IntentFilter filter2 = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        try {
+            filter.addDataType("text/plain");
+            filter1.addDataScheme("https");
+            filter2.addDataScheme("http");
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+            e.printStackTrace();
+        }
+        filters = new IntentFilter[] {filter, filter1, filter2};
+        Log.i("INFO", "Main on Create");
+    }
+
+    //화면 활성화 시 NFC 기능 활성화
+    @Override
+    protected void onResume() {
+        super.onResume();
+        nfcAdapter.enableForegroundDispatch(this, pInt, filters, null);
+        Log.i("INFO", "Main onResume");
+    }
+
+    //SingleTop으로 설정하면 새로 인스턴트 생성 안함 -> get Intent 의미 없음
+    //새로 인텐트를 받고 싶으면 반드시 onNewIntent() 함수를 오버라이딩 해야 함
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.i("INFO", "Main onNewIntent");
+        processIntent(intent);
+    }
+
+    private void processIntent(Intent i) {
+
+        //1. 전달된 intent에서 Parcelable 형태의 데이터(배열)를 추출
+        Parcelable[] rawData = i.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        //2. Parcelable의 배열의 첫번째에서 NdefMessage 데이터를 가져옵니다
+        NdefMessage ndefMsg = (NdefMessage) rawData[0];
+        //3. NdefMessage에서 NdefRecord 데이터를 가져옵니다
+        NdefRecord[] recArr = ndefMsg.getRecords();
+        //4. NdefRecord에서 getPayLoad 함수를 이용하여 실제 저장된 데이터를 가져와 TestView에 출력
+        NdefRecord ndefRec = recArr[0];
+
+        String type = new String(ndefRec.getType());
+        if(type.equals("T")) {
+            //데이터 꺼내기
+            byte[] byteData = ndefRec.getPayload();
+            String strData = new String(byteData, 3, byteData.length-3);
+            myTv.setText(strData);
+        } else if(type.equals("U")) {
+            myTv.setText(ndefRec.toUri().toString());
+        }
+    }
+
+    //화면 비활성화 시 NFC 기능 비활성화
+    @Override
+    protected void onPause() {
+        super.onPause();
+        nfcAdapter.disableForegroundDispatch(this);
+        Log.i("INFO", "Main onPause");
+    }
+}
